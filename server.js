@@ -16,14 +16,25 @@ const app = express();
 app.use(express.static("public"));
 
 // HTTP will expose our server to the web
-const http = require("http").createServer(app);
+//const http = require("http").createServer(app);
+
+// For HTTPS
+const https = require('https')
 
 // decide on which port we will use
-const port = process.env.PORT || 8080;
+//const port = process.env.PORT || 8080;
 
 //Server
-const server = app.listen(port);
-console.log("Server is running on http://localhost:" + port);
+//const server = app.listen(port);
+const fs = require('fs');
+const options = {
+    key: fs.readFileSync('./cert/privatekey.pem'),
+    cert: fs.readFileSync('./cert/cert.pem'),
+}
+
+const server = https.createServer(options, app).listen(443)
+
+//console.log("Server is running on http://localhost:" + port);
 
 /////SOCKET.IO///////
 const io = require("socket.io")().listen(server);
